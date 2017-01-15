@@ -1,0 +1,19 @@
+app:
+  image: node:7     ## node.js v4
+  volumes:          ## adds app folder to the container
+   - ./app:/app
+  links:            ## connects neo4j to app container
+   - neo4j
+  ports:            ## publish ports
+   - "3000:3000"
+  working_dir: /app         ## uses work dir /app
+  entrypoint: npm start     ## starts application
+  environment:
+    - CONTAINERISED=1
+
+neo4j:
+  image: neo4j:3.0          ## we use neo4j v3
+  ports:                    ## publish ports to have Web UI
+   - "7474:7474"
+  volumes:                  ## adds folder with login/password
+   - ./db/dbms:/data/dbms
