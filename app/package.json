@@ -13,11 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bookshelf": "^0.10.3",
+    "knex": "^0.12.6",
     "neo4j": "^2.0.0-RC2",
+    "objection": "^0.6.2",
+    "ramda": "^0.23.0",
     "twit": "^2.2.5"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.1.8",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
