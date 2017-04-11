@@ -1,17 +1,25 @@
 import TwitterChannel from './channel';
 
-export default class TwitterTask {
-  constructor(storage) {
-    this.channel = new TwitterChannel();
-    this.data = [];
-    this.storage = storage;
-    this.logger = console;
+
+export class BaseTask {
+  constructor(args) {
+    this.storage = args.storage;
+    this._data = args.data || [];
+    this.logger = args.logger || console;
   }
   get data() {
-    return this.data;
+    return this._data;
   }
   set data(data) {
-    this.data = data;
+    this._data = data;
+  }
+}
+
+
+export default class TwitterTask extends BaseTask {
+  constructor(args) {
+    super(args);
+    this.channel = new TwitterChannel();
   }
   start(args) {
     this.logger.log('starting');

@@ -2,6 +2,7 @@ app:
   image: node:7     ## node.js v4
   volumes:          ## adds app folder to the container
    - ./app:/app
+   - ./data:/data
   links:            ## connects neo4j to app container
    - db
   #  - neo4j
@@ -10,8 +11,8 @@ app:
   working_dir: /app         ## uses work dir /app
   entrypoint: npm start     ## starts application
   environment:
-    - "DEBUG=${DEBUG}"
     - CONTAINERISED=1
+    - "DEBUG=${DEBUG}"
     - "PG_USER=${PG_USER}"
     - "PG_PASS=${PG_PASS}"
     - "PG_HOST=${PG_HOST}"

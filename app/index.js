@@ -1,21 +1,31 @@
-import { writeFileSync, unlinkSync, existsSync } from 'fs';
+
 // import neo4j from 'neo4j';
 import DB from './db';
-import { getFollowerIds, getUsersFromIds } from './tasks';
+import { getFollowerIds, getUsersFromIds, writeToFile } from './tasks';
 import { isNil } from 'ramda';
 
-
+// TODO: use one channel for all tasks in the workflow
+// TODO: add table for followers
+// TODO: actually store stuff
+// TODO: create simple strategies
+// stratagies - simple
+// Follow suggested users - keep record of the follow - unfollow previously followed
+// use a seed group users you want to be engaged with either follow their friends,
 class Workflow {
   constructor(db) {
     this.DB = db;
     this.workflow = [
       // { getUsers : '14387990' },
-      { task: getFollowerIds, args: { userId: 'timrich' } },
+      { task: writeToFile, args: { filename: 'followers' } },
       { task: getUsersFromIds },
+      { task: getFollowerIds, args: { userId: 'timrich' } },
     ];
   }
-  runTask(data) {
-    const { Task, args = {} } = this.workflow.pop();
+  run(data) {
+    if (!this.workflow.length) {
+      return data;
+    }
+    const { task: Task, args = {} } = this.workflow.pop();
     const task = new Task({ storage: this.DB, ...args });
     let promise;
     if (!isNil(data)) {
@@ -24,14 +34,15 @@ class Workflow {
       promise = task.run();
     }
     return promise
-    .then(result => this.runTask(result));
+    .then(result => this.run(result));
   }
 }
 
 const db = new DB();
 const workflow = new Workflow(db);
-db.init()
-.then(workflow.run);
+const result = db.init()
+.then(() => workflow.run());
+console.log(result);
 
 //class Stragegy {
 //  start() {
@@ -57,19 +68,7 @@ db.init()
 //   });
 // });
 
-// const writeToFile = (filename, data) => {
-//   let DATA_DIR_PATH;
-//   if (process.env.CONTAINERISED) {
-//     DATA_DIR_PATH = '/data';
-//   } else {
-//     DATA_DIR_PATH = '../data';
-//   }
-//   const path = `${DATA_DIR_PATH}/${filename}.json`;
-//   if (existsSync(path)) {
-//     unlinkSync(path);
-//   }
-//   writeFileSync(path, JSON.stringify(data, null, '  '));
-// };
+
 //
 // // const db = new neo4j.GraphDatabase('http://neo4j:letmein@neo4j:7474');
 //
@@ -167,7 +166,3 @@ db.init()
 
 //
 // getSuggestions().then(({ data }) => console.log(data));
-
-// stratagies - simple
-// Follow suggested users - keep record of the follow - unfollow previously followed
-// use a seed group users you want to be engaged with either follow their friends,
