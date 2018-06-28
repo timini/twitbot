@@ -2,7 +2,7 @@ import TwitterTask from './task';
 
 export default class getFollowerIds extends TwitterTask {
   constructor(args) {
-    super(args.storage);
+    super(args);
     this.count = 5000;
     this.userId = args.userId;
   }

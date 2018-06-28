@@ -1,7 +1,7 @@
 
 // import neo4j from 'neo4j';
 import DB from './db';
-import { getFollowerIds, getUsersFromIds, writeToFile } from './tasks';
+import { getFollowerIds, getUsersFromIds, writeToFile, diffFollowers } from './tasks';
 import { isNil } from 'ramda';
 
 // TODO: use one channel for all tasks in the workflow
@@ -18,6 +18,7 @@ class Workflow {
       // { getUsers : '14387990' },
       { task: writeToFile, args: { filename: 'followers' } },
       { task: getUsersFromIds },
+      { task: diffFollowers },
       { task: getFollowerIds, args: { userId: 'timrich' } },
     ];
   }
@@ -41,7 +42,8 @@ class Workflow {
 const db = new DB();
 const workflow = new Workflow(db);
 const result = db.init()
-.then(() => workflow.run());
+.then(() => workflow.run())
+.then()
 console.log(result);
 
 //class Stragegy {
